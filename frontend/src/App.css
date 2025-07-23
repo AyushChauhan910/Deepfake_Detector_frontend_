@@ -1,38 +1,116 @@
-.App {
+body {
+  background: #181a20;
+  color: #f1f1f1;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 420px;
+  margin: 60px auto 0 auto;
+  background: #23262f;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  padding: 36px 28px 24px 28px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+  color: #f7ca18;
+  text-shadow: 0 2px 8px #000a;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.dropzone {
+  background: #1a1d23;
+  border: 2px dashed #444;
+  border-radius: 12px;
+  padding: 36px 0;
+  margin-bottom: 22px;
+  color: #aaa;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.dropzone.active {
+  border-color: #f7ca18;
+  background: #23262f;
+  color: #f7ca18;
+}
+
+.analyze-btn {
+  background: linear-gradient(90deg, #f7ca18 0%, #f7971e 100%);
+  color: #23262f;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 18px;
+  margin-top: 8px;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px #0004;
+}
+
+.analyze-btn:disabled {
+  background: #444;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.result, .error {
+  margin-top: 24px;
+  padding: 18px 12px;
+  border-radius: 10px;
+  background: #1a1d23;
+  box-shadow: 0 2px 8px #0002;
+}
+
+.result h2 {
+  color: #f7ca18;
+  margin-bottom: 12px;
+}
+
+.error {
+  color: #ff4d4f;
+  border: 1px solid #ff4d4f;
+}
+
+footer {
+  margin-top: 32px;
+  font-size: 0.95rem;
+  color: #888;
+}
+
+footer a {
+  color: #f7ca18;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.spinner-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  margin: 18px 0 10px 0;
 }
 
-.App-link {
-  color: #61dafb;
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 5px solid #f7ca18;
+  border-top: 5px solid #23262f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 2px 8px #0004;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

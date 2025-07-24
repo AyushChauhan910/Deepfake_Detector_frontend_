@@ -669,12 +669,28 @@ body.dark-mode .side-navbar {
   border-right: 2px solid #181a20;
 }
 body.dark-mode .nav-link {
-  color: #b3c6ff;
+  color: #e0e7ef;
+  background: transparent;
 }
 body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
-  background: #181a20;
+  background: linear-gradient(90deg, #b3c6ff 60%, #38b8ff 100%);
+  color: #23262f;
+  box-shadow: 0 2px 12px rgba(30,32,40,0.13);
+}
+body.dark-mode .theme-toggle-btn {
+  background: linear-gradient(135deg, #23262f 60%, #181a20 100%);
+  color: #b3c6ff;
+  box-shadow: 0 2px 8px rgba(30,32,40,0.18);
+}
+body.dark-mode .theme-toggle-btn:hover {
+  background: linear-gradient(135deg, #181a20 60%, #23262f 100%);
+  color: #38b8ff;
+}
+body.dark-mode .edu-link, body.dark-mode .about-page a {
+  color: #e0e7ef;
+}
+body.dark-mode .edu-link:hover, body.dark-mode .about-page a:hover {
   color: #fff;
-  border-left: 4px solid #b3c6ff;
 }
 .education-page {
   max-width: 800px;
@@ -1201,4 +1217,12 @@ body, .main-content {
 }
 .about-table, .edu-explained-table {
   animation: fadeInScale 1.1s cubic-bezier(.4,1.2,.6,1) both;
+}
+
+body.dark-mode a {
+  color: #e0e7ef;
+  transition: color 0.18s;
+}
+body.dark-mode a:hover {
+  color: #fff;
 }

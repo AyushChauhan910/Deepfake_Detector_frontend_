@@ -42,6 +42,66 @@ function Toast({ message, type, onClose }) {
   );
 }
 
+// FilePreview component
+function FilePreview({ file, type, style }) {
+  if (!file) return null;
+  const url = typeof file === 'string' ? file : URL.createObjectURL(file);
+  if (type.startsWith('image/')) {
+    return <img src={url} alt="preview" style={{ maxWidth: 120, maxHeight: 80, borderRadius: 8, ...style }} />;
+  }
+  if (type.startsWith('video/')) {
+    return <video src={url} controls style={{ maxWidth: 120, maxHeight: 80, borderRadius: 8, ...style }} />;
+  }
+  if (type.startsWith('audio/')) {
+    return <audio src={url} controls style={{ maxWidth: 120, ...style }} />;
+  }
+  return <span style={{ fontSize: 32, ...style }}>📄</span>;
+}
+
+// Feedback (rating) component
+function ResultFeedback({ onRate, rated }) {
+  return (
+    <motion.div
+      className="feedback-container"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.4 }}
+    >
+      {rated ? (
+        <motion.span
+          className="feedback-thankyou"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          Thank you for your feedback!
+        </motion.span>
+      ) : (
+        <>
+          <span>Was this result accurate?</span>
+          <motion.button
+            className="feedback-btn thumbs-up"
+            whileTap={{ scale: 0.85 }}
+            onClick={() => onRate("up")}
+            aria-label="Thumbs up"
+          >
+            👍
+          </motion.button>
+          <motion.button
+            className="feedback-btn thumbs-down"
+            whileTap={{ scale: 0.85 }}
+            onClick={() => onRate("down")}
+            aria-label="Thumbs down"
+          >
+            👎
+          </motion.button>
+        </>
+      )}
+    </motion.div>
+  );
+}
+
 const API_URL = "https://ayush0910-deepfake-detector.hf.space/api/infer";
 
 function App() {
@@ -51,11 +111,15 @@ function App() {
   const [error, setError] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [toast, setToast] = useState({ message: "", type: "" });
+  const [fileType, setFileType] = useState("");
+  const [feedbackRated, setFeedbackRated] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
+    setFileType(acceptedFiles[0]?.type || "");
     setResult(null);
     setError("");
+    setUploadProgress(0);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -118,6 +182,14 @@ function App() {
     setUploadProgress(0);
   };
 
+  const handleFeedback = (rating) => {
+    setFeedbackRated(true);
+    // In a real application, you would send the rating to your backend
+    // For now, we'll just log it or update a state if needed for immediate feedback
+    console.log(`Feedback received: ${rating}`);
+    // Example: setToast({ message: `Thank you for your feedback!`, type: "success" });
+  };
+
   const closeToast = () => setToast({ message: "", type: "" });
 
   return (
@@ -144,7 +216,10 @@ function App() {
               >
                 <input {...getInputProps()} />
                 {file ? (
-                  <span>{file.name}</span>
+                  <>
+                    <FilePreview file={file} type={fileType} style={{ marginRight: 12 }} />
+                    <span>{file.name}</span>
+                  </>
                 ) : isDragActive ? (
                   <span>Drop your file here...</span>
                 ) : (
@@ -183,18 +258,32 @@ function App() {
                     exit={{ opacity: 0, y: 20 }}
                   >
                     <h2>Result</h2>
-                    <div>
-                      <strong>Prediction:</strong> {result.prediction}
+                    <div className="result-horizontal">
+                      <div className="result-visual">
+                        <span className={`result-icon ${result.prediction === 'Real' ? 'real' : 'deepfake'}`}>{result.prediction === 'Real' ? '✔️' : '⚠️'}</span>
+                        <span style={{ fontSize: '2rem', fontWeight: 700, color: result.prediction === 'Real' ? '#2ecc40' : '#ff4f4f' }}>{result.prediction}</span>
+                      </div>
+                      <div className="result-bar-group">
+                        <span className="result-label">Confidence</span>
+                        <div className="confidence-bar-bg">
+                          <motion.div className="confidence-bar" style={{ width: `${(result.confidence * 100).toFixed(2)}%`, background: result.confidence > 0.5 ? '#2ecc40' : '#ff4f4f' }} initial={{ width: 0 }} animate={{ width: `${(result.confidence * 100).toFixed(2)}%` }} transition={{ duration: 0.7 }} />
+                        </div>
+                        <span className="confidence-value">{(result.confidence * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="result-info-group">
+                        <span className="result-label">Processing Time</span>
+                        <span className="result-info-icon">⏱️</span>
+                        <span className="result-info-value">{result.processing_time?.toFixed(2)}s</span>
+                        <span className="result-label">Type</span>
+                        <span className="result-info-icon">{result.modality === 'image' ? '🖼️' : result.modality === 'video' ? '🎬' : result.modality === 'audio' ? '🎵' : '📄'}</span>
+                        <span className="result-info-value">{result.modality}</span>
+                      </div>
+                      <div className="result-file-preview">
+                        <FilePreview file={file} type={fileType} style={{ margin: 0 }} />
+                        <span className="result-label">File Preview</span>
+                      </div>
                     </div>
-                    <div>
-                      <strong>Confidence:</strong> {(result.confidence * 100).toFixed(2)}%
-                    </div>
-                    <div>
-                      <strong>Type:</strong> {result.modality}
-                    </div>
-                    <div>
-                      <strong>Processing Time:</strong> {result.processing_time?.toFixed(2)}s
-                    </div>
+                    <ResultFeedback onRate={handleFeedback} rated={feedbackRated} />
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
@@ -113,6 +113,13 @@ function App() {
   const [toast, setToast] = useState({ message: "", type: "" });
   const [fileType, setFileType] = useState("");
   const [feedbackRated, setFeedbackRated] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', theme === 'dark');
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -194,7 +201,16 @@ function App() {
 
   return (
     <Router>
-      <div className="container">
+      <div className={`container ${theme}-theme`}>
+        <motion.button
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
+          whileTap={{ scale: 0.85 }}
+          aria-label="Toggle dark/light mode"
+          style={{ position: 'fixed', top: 24, right: 24, zIndex: 1100 }}
+        >
+          {theme === 'light' ? '🌙' : '☀️'}
+        </motion.button>
         <Toast message={toast.message} type={toast.type} onClose={closeToast} />
         <Routes>
           <Route path="/" element={

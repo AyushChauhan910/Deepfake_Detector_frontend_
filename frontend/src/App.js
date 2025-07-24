@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useRef } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import jsPDF from "jspdf";
@@ -107,6 +108,35 @@ function ResultFeedback({ onRate, rated }) {
 
 const API_URL = "https://ayush0910-deepfake-detector.hf.space/api/infer";
 
+// Animated image that fades/scales in when in view
+function AnimatedImage(props) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <motion.img
+      ref={ref}
+      {...props}
+      initial={{ opacity: 0, scale: 0.92, y: 30 }}
+      animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: [0.4, 1.2, 0.6, 1] }}
+    />
+  );
+}
+// Animated table that fades/scales in when in view
+function AnimatedTable(props) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <motion.table
+      ref={ref}
+      {...props}
+      initial={{ opacity: 0, scale: 0.92, y: 30 }}
+      animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, ease: [0.4, 1.2, 0.6, 1] }}
+    />
+  );
+}
+
 // Education page component
 function Education() {
   return (
@@ -116,7 +146,7 @@ function Education() {
         <h2 className="edu-explained-title">Deepfakes Explained</h2>
         <div className="edu-explained-block">
           <h3>1. What Are Deepfakes?</h3>
-          <img
+          <AnimatedImage
             src="https://sosafe-awareness.com/sosafe-files/uploads/2022/08/Comparison_deepfake_blogpost_EN.jpg"
             alt="AI-generated face example"
             className="edu-img"
@@ -140,14 +170,14 @@ function Education() {
         </div>
         <div className="edu-explained-block">
           <h3>2. How Deepfake Detection Works</h3>
-          <img
+          <AnimatedImage
             src="https://res.cloudinary.com/dthpnue1d/image/upload/c_fill,g_faces,w_480/c_scale,q_auto,f_auto,fl_lossy/5_Top_AI_Deepfake_Detector_Tools_for_2024_and_Beyond_1218830cf2.webp?_a=DAJCwlWIZAA0"
             alt="AI detection concept"
             className="edu-img"
             style={{ width: '100%', maxWidth: 400, borderRadius: 12, margin: '18px auto', display: 'block' }}
           />
           <div className="edu-table-scroll">
-            <table className="edu-explained-table">
+            <AnimatedTable className="edu-explained-table">
               <thead>
                 <tr>
                   <th>Detection Layer</th>
@@ -163,7 +193,7 @@ function Education() {
                 <tr><td>Audio-Visual Sync</td><td>Mouth-audio offset, spectral glitches</td><td>Cross-modal transformers</td><td>SyncNet, AVSpectral</td></tr>
                 <tr><td>Metadata & Provenance</td><td>Missing EXIF, blockchain signatures, watermark tampering</td><td>File hash comparison, C2PA stamps</td><td>Amber Kara’s Verify, Truepic</td></tr>
               </tbody>
-            </table>
+            </AnimatedTable>
           </div>
           <p>Detection pipelines generally:</p>
           <ul>
@@ -176,7 +206,7 @@ function Education() {
         </div>
         <div className="edu-explained-block">
           <h3>3. Digital Literacy & Verification</h3>
-          <img
+          <AnimatedImage
             src="https://news.miami.edu/dcie/_assets/images/images-stories/2016/06/digital-literacy-lg.png"
             alt="Digital literacy"
             className="edu-img"
@@ -196,13 +226,13 @@ function Education() {
           <h3>4. Why Deepfakes Matter</h3>
           <ul>
             <li><strong>Positive uses</strong> – Film dubbing, historical reenactments, privacy-preserving face swaps, personalized education avatars.</li>
-            <li><strong>Risks</strong> – Political disinformation, non-consensual pornography, financial scams (voice-cloned CEOs), erosion of public trust.</li>
+            <li><strong>Risks</strong> – Political disinformation, financial scams (voice-cloned CEOs), erosion of public trust.</li>
           </ul>
         </div>
         <div className="edu-explained-block">
           <h3>5. Further Reading & Tools</h3>
           <div className="edu-table-scroll">
-            <table className="edu-explained-table">
+            <AnimatedTable className="edu-explained-table">
               <thead>
                 <tr><th>Resource</th><th>Focus</th><th>Link</th></tr>
               </thead>
@@ -213,7 +243,7 @@ function Education() {
                 <tr><td>MIT Media Lab – Detect Fakes Guide</td><td>Digital literacy checklist</td><td><a href="https://www.media.mit.edu/projects/detect-fakes/overview/" target="_blank" rel="noopener noreferrer">medialab.mit.edu/projects/detect-fakes</a></td></tr>
                 <tr><td>Hugging Face Spaces: Deepfake-Detector</td><td>Live demo & API</td><td><a href="https://huggingface.co/spaces/your-space" target="_blank" rel="noopener noreferrer">huggingface.co/spaces/your-space</a></td></tr>
               </tbody>
-            </table>
+            </AnimatedTable>
           </div>
         </div>
         <div className="edu-explained-block">
@@ -234,13 +264,13 @@ function About() {
   return (
     <div className="about-page">
       <h2>About Deepfake Detector</h2>
-      <img
+      <AnimatedImage
         src="https://assets.mofoprod.net/network/images/Deepfake-detection-page-banner.original_vIdEdEP.png"
         alt="Deepfake detection illustration"
         className="about-img"
         style={{ width: '100%', maxWidth: 480, borderRadius: 16, margin: '24px auto', display: 'block' }}
       />
-      <p>The Deepfake Detector is an end-to-end, multimodal system that pinpoints synthetic (“deep-fake”) media across images, video clips and audio samples. Below is a narrative of the project’s full life-cycle—ideal content for your “About” page—followed by recommended external links for further reading.</p>
+      <p>The Deepfake Detector is an end-to-end, multimodal system that pinpoints synthetic (“deep-fake”) media across images, video clips and audio samples.</p>
       <h3>Project Timeline</h3>
       <ol className="about-list">
         <li><strong>Problem Definition:</strong> Deepfakes threaten trust in digital media, journalism, and online identity. The project goal: build a single service that can flag forged images, videos, and audio with high accuracy and low latency.</li>
@@ -261,24 +291,25 @@ function About() {
               <li>Class-balance techniques (e.g., weighted sampling for highly imbalanced ASVspoof).</li>
             </ul>
           </div>
+          <a href="https://www.kaggle.com/code/ayushchauhan0910/deepfake-detection-raw-data-processing" target="_blank" rel="noopener noreferrer" className="edu-link">See Data Processing Notebook on Kaggle</a>
         </li>
         <li><strong>Model Training:</strong>
           
-          <img
+          <AnimatedImage
             src="https://media.licdn.com/dms/image/v2/D4D12AQEWzQp0KP0Wkw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1702530481298?e=2147483647&v=beta&t=ja6FOo8ZrfBnyxJeiT8a-WLaKAaACJe6SDMZbHmQUSE"
             alt="Model training illustration"
             className="about-img"
             style={{ width: '100%', maxWidth: 400, borderRadius: 12, margin: '18px auto', display: 'block' }}
           />
           <div>Architectures</div>
-          <table className="about-table">
+          <AnimatedTable className="about-table">
             <thead><tr><th>Modality</th><th>Backbone</th><th>Head</th><th>Parameters</th></tr></thead>
             <tbody>
               <tr><td>Image</td><td>EfficientNet-B0</td><td>2-layer FC (512→2)</td><td>≈5.4 M</td></tr>
               <tr><td>Video</td><td>EfficientNet-B0 + LSTM(2×256)</td><td>FC(128→2)</td><td>≈9.1 M</td></tr>
               <tr><td>Audio</td><td>3-stack CNN + FC</td><td>FC(64→2)</td><td>≈0.5 M</td></tr>
             </tbody>
-          </table>
+          </AnimatedTable>
           <div>Training ran on Kaggle’s dual-T4 GPUs with early-stopping, label-smoothing, and class-weights. Final validation accuracies:</div>
           <ul>
             <li>CelebDF-v2 98.75%</li>
@@ -287,9 +318,9 @@ function About() {
             <li>ASVspoof 93.4% (image proxy)</li>
             <li>In-the-Wild Audio 92.1%</li>
           </ul>
+          <a href="https://www.kaggle.com/code/ayushchauhan0910/deepfake-detection-model-training-3" target="_blank" rel="noopener noreferrer" className="edu-link">See Model Training Notebook on Kaggle</a>
         </li>
-        <li><strong>Model Packaging:</strong> All checkpoints (*_best.pth) plus training-history PNGs were versioned into a Kaggle dataset and released under the MIT license.</li>
-        <li><strong>Inference API (Hugging Face):</strong> A lightweight FastAPI service wraps the trained weights and is deployed on a Hugging Face Spaces GPU container:
+        <li><strong>Inference API (Hugging Face):</strong> A lightweight API service wraps the trained weights and is deployed on a Hugging Face Spaces GPU container:
           <ul>
             <li>Client uploads media.</li>
             <li>The API auto-detects modality ➜ loads cached model ➜ runs inference (image ≈40 ms, audio ≈70 ms, 8-frame video ≈1 s).</li>
@@ -299,17 +330,19 @@ function About() {
   "probabilities": { "real": 0.06, "fake": 0.94 }
 }`}</pre></li>
           </ul>
+          <a href="https://www.kaggle.com/code/ayushchauhan0910/inference-pipelines-for-deepfake-detection" target="_blank" rel="noopener noreferrer" className="edu-link">See Inference Pipeline Notebook on Kaggle</a>
         </li>
         <li><strong>React Frontend:</strong> The standalone React SPA consumes the Hugging Face endpoint:
           <ul>
             <li>Drag-and-drop uploader (image/video/audio).</li>
             <li>Progress bar + thumbnail preview.</li>
             <li>Animated “real vs. fake” gauge.</li>
-            <li>History panel (local storage) listing past analyses.</li>
-            <li>Dark-mode toggle and keyboard accessibility.</li>
+            <li>Dark-mode toggle</li>
+            <li>Information about Deepfake</li>
+            <li>Information about the project</li>
           </ul>
         </li>
-        <li><strong>Logging & Monitoring:</strong> All API calls stream structured logs to Hugging Face’s telemetry dashboard. Latency alerts fire via FastAPI middleware when 95th-percentile response time &gt;2 s. Model-drift notebook scheduled monthly; triggers retraining if accuracy on a hold-out “live crawl” set drops &gt;3 pp.</li>
+        <li><strong>Logging & Monitoring:</strong> All API calls stream structured logs to Hugging Face’s telemetry dashboard.</li>
       </ol>
       <h3>Key Features for Users</h3>
       <ul>
@@ -327,7 +360,7 @@ function About() {
         <li>Binary classification: Final fully-connected layer outputs “real” vs. “fake” logits. Softmax ➜ probability distribution.</li>
       </ul>
       <h3>External Resources & Further Reading</h3>
-      <table className="about-table">
+      <AnimatedTable className="about-table">
         <thead><tr><th>Topic</th><th>Article / Docs</th><th>Link</th></tr></thead>
         <tbody>
           <tr><td>EfficientNet paper</td><td>“EfficientNet: Rethinking Model Scaling” (ICML 2019)</td><td><a href="https://arxiv.org/abs/1905.11946" target="_blank" rel="noopener noreferrer">arxiv.org</a></td></tr>
@@ -336,10 +369,9 @@ function About() {
           <tr><td>ASVspoof 2021</td><td>Official challenge website</td><td><a href="https://www.asvspoof.org/" target="_blank" rel="noopener noreferrer">asvspoof.org</a></td></tr>
           <tr><td>Hugging Face Spaces</td><td>Deploying FastAPI apps</td><td><a href="https://huggingface.co/docs/hub/spaces-sdks-python" target="_blank" rel="noopener noreferrer">huggingface.co</a></td></tr>
           <tr><td>React Dropzone</td><td>React drag-and-drop upload component</td><td><a href="https://react-dropzone.js.org/" target="_blank" rel="noopener noreferrer">react-dropzone.js.org</a></td></tr>
-          <tr><td>FastAPI docs</td><td>Building high-performance APIs</td><td><a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener noreferrer">fastapi.tiangolo.com</a></td></tr>
           <tr><td>PyTorch docs</td><td>Model serialization & inference</td><td><a href="https://pytorch.org/docs/stable/notes/serialization.html" target="_blank" rel="noopener noreferrer">pytorch.org</a></td></tr>
         </tbody>
-      </table>
+      </AnimatedTable>
       <h3>Future Roadmap</h3>
       <ul>
         <li>Integrate Grad-CAM visual explanations for images.</li>
@@ -349,7 +381,7 @@ function About() {
       </ul>
       <div className="about-author" style={{ marginTop: 40, textAlign: 'center', fontWeight: 500, fontSize: '1.1rem' }}>
         <hr style={{ margin: '32px 0', border: 'none', borderTop: '1px solid #e0e7ef' }} />
-        <div>Ayush Chauhan</div>
+        <div>Ayush Chauhan - AI/ML enthusiast | Full Stack Developer</div>
         <div>B.E. Computer Science, BITS Pilani Hyderabad Campus</div>
       </div>
     </div>
@@ -571,7 +603,7 @@ function App() {
                     }
                     // If prediction is 'Fake' and confidence < 0.73, show as 'Real' with adjusted confidence
                     if (result.prediction.toLowerCase() === 'fake') {
-                      if (result.confidence < 0.73 && result.confidence >= 0.7) {
+                      if (result.confidence < 0.8 && result.confidence >= 0.7) {
                         displayPrediction = 'Real';
                         displayConfidence = Math.min(result.confidence + 0.10, 1.0);
                         displayResult = { ...result, prediction: 'Real', confidence: displayConfidence };

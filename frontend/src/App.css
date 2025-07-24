@@ -427,6 +427,7 @@ footer a {
     align-items: stretch;
     gap: 18px;
     max-width: 99vw;
+    overflow-x: auto;
   }
   .result-bar-group, .result-info-group, .result-file-preview, .result-visual {
     min-width: 0;
@@ -436,6 +437,62 @@ footer a {
   .confidence-bar-bg {
     width: 98vw;
     max-width: 98vw;
+  }
+  .dropzone {
+    min-height: 100px;
+    font-size: 1.1rem;
+    padding: 0 8px;
+  }
+  .analyze-btn {
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    margin: 24px 0 0 0;
+  }
+  .feedback-container {
+    gap: 14px;
+    font-size: 1.05rem;
+    margin-top: 24px;
+  }
+  .feedback-btn {
+    font-size: 1.3rem;
+    padding: 4px 10px;
+  }
+  .result-icon {
+    font-size: 2.2rem;
+    padding: 10px 14px;
+    margin-right: 6px;
+  }
+  .result-file-preview.large img,
+  .result-file-preview.large video {
+    max-width: 98vw !important;
+    max-height: 90px !important;
+  }
+  .result-file-preview.large audio {
+    max-width: 98vw !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .dropzone {
+    min-height: 60px;
+    font-size: 0.95rem;
+    padding: 0 2px;
+  }
+  .analyze-btn {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+  }
+  .result {
+    padding: 8px 2px;
+    font-size: 0.95rem;
+  }
+  .result-horizontal {
+    gap: 8px;
+  }
+  .feedback-container {
+    gap: 8px;
+    font-size: 0.95rem;
+    margin-top: 12px;
   }
 }
 
@@ -519,6 +576,30 @@ body.dark-mode .confidence-value,
 body.dark-mode .confidence-value.large {
   color: #fff;
   text-shadow: 0 1px 4px #23262f;
+}
+
+.download-report-btn {
+  background: linear-gradient(90deg, #4f6cff, #38b8ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 10px 28px;
+  box-shadow: 0 2px 8px rgba(44,44,44,0.08);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.download-report-btn:hover {
+  background: linear-gradient(90deg, #38b8ff, #4f6cff);
+  box-shadow: 0 4px 16px rgba(44,44,44,0.13);
+}
+body.dark-mode .download-report-btn {
+  background: linear-gradient(90deg, #b3c6ff, #38b8ff);
+  color: #23262f;
+}
+body.dark-mode .download-report-btn:hover {
+  background: linear-gradient(90deg, #38b8ff, #b3c6ff);
 }
 
 @media (max-width: 600px) {

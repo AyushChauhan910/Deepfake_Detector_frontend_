@@ -3,6 +3,8 @@ import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 // Spinner component
 function Spinner() {
@@ -199,6 +201,17 @@ function App() {
 
   const closeToast = () => setToast({ message: "", type: "" });
 
+  // Download report handler
+  const handleDownloadReport = async () => {
+    const resultElement = document.querySelector('.result');
+    if (!resultElement) return;
+    const canvas = await html2canvas(resultElement, { backgroundColor: null, scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [canvas.width, canvas.height] });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('deepfake_report.pdf');
+  };
+
   return (
     <Router>
       <div className={`container ${theme}-theme`}>
@@ -284,6 +297,14 @@ function App() {
                       exit={{ opacity: 0, y: 20 }}
                     >
                       <h2>Result</h2>
+                      <motion.button
+                        className="download-report-btn"
+                        onClick={handleDownloadReport}
+                        whileTap={{ scale: 0.93 }}
+                        style={{ position: 'absolute', top: 24, right: 32, zIndex: 2 }}
+                      >
+                        Download Report
+                      </motion.button>
                       <div className="result-horizontal">
                         <div className="result-visual">
                           <span className={`result-icon ${displayPrediction === 'Real' ? 'real' : 'deepfake'}`}>{displayPrediction === 'Real' ? '✔️' : '⚠️'}</span>

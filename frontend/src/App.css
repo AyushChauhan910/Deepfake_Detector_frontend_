@@ -602,34 +602,140 @@ body.dark-mode .download-report-btn:hover {
   background: linear-gradient(90deg, #38b8ff, #b3c6ff);
 }
 
-@media (max-width: 600px) {
-  .container {
-    padding: 0 8px;
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background: none;
+}
+.side-navbar {
+  width: 180px;
+  min-width: 140px;
+  background: #f5f7ff;
+  border-right: 2px solid #e0e7ef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0 0 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 100;
+}
+.nav-link {
+  display: block;
+  width: 100%;
+  padding: 16px 32px;
+  color: #4f6cff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-left: 20px solid transparent;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.nav-link:hover, .nav-link.active {
+  background: #e0e7ef;
+  color: #22304a;
+  border-left: 4px solid #4f6cff;
+}
+.main-content {
+  flex: 1;
+  padding: 0 0 0 0;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body.dark-mode .side-navbar {
+  background: #23262f;
+  border-right: 2px solid #181a20;
+}
+body.dark-mode .nav-link {
+  color: #b3c6ff;
+}
+body.dark-mode .nav-link:hover, body.dark-mode .nav-link.active {
+  background: #181a20;
+  color: #fff;
+  border-left: 4px solid #b3c6ff;
+}
+.education-page {
+  max-width: 800px;
+  margin: 48px auto 0 auto;
+  padding: 32px 24px;
+  background: rgba(245,247,255,0.98);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(79,108,255,0.07);
+  color: #22304a;
+}
+.education-page h2 {
+  font-size: 2.2rem;
+  color: #4f6cff;
+  margin-bottom: 18px;
+}
+.edu-section {
+  margin-bottom: 32px;
+}
+.edu-section h3 {
+  color: #38b8ff;
+  margin-bottom: 8px;
+}
+body.dark-mode .education-page {
+  background: #23262f;
+  color: #f1f1f1;
+  box-shadow: 0 4px 32px rgba(30,32,40,0.13);
+}
+body.dark-mode .education-page h2 {
+  color: #b3c6ff;
+}
+body.dark-mode .edu-section h3 {
+  color: #b3c6ff;
+}
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
   }
-  .dropzone, .result, .progress-bar-container {
-    max-width: 98vw;
+  .side-navbar {
+    flex-direction: row;
+    width: 100vw;
     min-width: 0;
-    padding-left: 8px;
-    padding-right: 8px;
+    height: auto;
+    border-right: none;
+    border-bottom: 2px solid #e0e7ef;
+    padding: 0;
+    position: static;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
   }
-  .title {
-    font-size: 2.1rem;
-    margin: 32px 0 18px 0;
+  .nav-link {
+    padding: 14px 18px;
+    border-left: none;
+    border-bottom: 4px solid transparent;
+    font-size: 1.05rem;
+    text-align: center;
   }
-  .result {
-    padding: 18px 8px;
+  .nav-link:hover, .nav-link.active {
+    background: #e0e7ef;
+    color: #22304a;
+    border-bottom: 4px solid #4f6cff;
+    border-left: none;
   }
-  .toast {
-    right: 8px;
-    top: 56px;
-    min-width: 140px;
-    font-size: 0.95rem;
-    padding: 14px 18px 14px 10px;
+  body.dark-mode .side-navbar {
+    border-bottom: 2px solid #181a20;
+    border-right: none;
   }
-  .toast-close {
-    top: 4px;
-    right: 4px;
-    font-size: 1.1rem;
-    padding: 1px 6px;
+  .main-content {
+    padding: 0;
+  }
+}
+@media (max-width: 600px) {
+  .education-page {
+    margin: 18px 0 0 0;
+    padding: 12px 2px;
+    border-radius: 10px;
+  }
+  .side-navbar {
+    padding: 0;
   }
 }

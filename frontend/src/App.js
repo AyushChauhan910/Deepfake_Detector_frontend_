@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -105,6 +105,38 @@ function ResultFeedback({ onRate, rated }) {
 }
 
 const API_URL = "https://ayush0910-deepfake-detector.hf.space/api/infer";
+
+// Education page component
+function Education() {
+  return (
+    <div className="education-page">
+      <h2>Educational Content</h2>
+      <p>Learn about deepfakes, detection methods, and digital literacy.</p>
+      {/* Add articles, videos, infographics here */}
+      <div className="edu-section">
+        <h3>What are Deepfakes?</h3>
+        <p>Deepfakes are synthetic media in which a person in an existing image or video is replaced with someone else's likeness using artificial intelligence.</p>
+      </div>
+      <div className="edu-section">
+        <h3>How Deepfake Detection Works</h3>
+        <ul>
+          <li>AI models analyze inconsistencies in facial movements, lighting, and audio.</li>
+          <li>Frame-by-frame analysis and artifact detection.</li>
+          <li>Use of neural networks trained on real and fake data.</li>
+        </ul>
+      </div>
+      <div className="edu-section">
+        <h3>Digital Literacy Tips</h3>
+        <ul>
+          <li>Be skeptical of sensational content.</li>
+          <li>Check sources and context.</li>
+          <li>Use tools to verify media authenticity.</li>
+        </ul>
+      </div>
+      {/* You can add more rich content, videos, or infographics here */}
+    </div>
+  );
+}
 
 function App() {
   const [file, setFile] = useState(null);
@@ -214,135 +246,142 @@ function App() {
 
   return (
     <Router>
-      <div className={`container ${theme}-theme`}>
-        <motion.button
-          className="theme-toggle-btn"
-          onClick={toggleTheme}
-          whileTap={{ scale: 0.85 }}
-          aria-label="Toggle dark/light mode"
-          style={{ position: 'fixed', top: 24, right: 24, zIndex: 1100 }}
-        >
-          {theme === 'light' ? '🌙' : '☀️'}
-        </motion.button>
-        <Toast message={toast.message} type={toast.type} onClose={closeToast} />
-        <Routes>
-          <Route path="/" element={
-            <>
-              <motion.h1
-                initial={{ opacity: 0, y: -40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="title"
-              >
-                Deepfake Detector
-              </motion.h1>
-              <motion.div
-                {...getRootProps()}
-                className={`dropzone${isDragActive ? " active" : ""}`}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <input {...getInputProps()} />
-                {file && !loading ? (
-                  <>
-                    <FilePreview file={file} type={fileType} style={{ marginRight: 12, maxWidth: 220, maxHeight: 160 }} />
-                    <span>{file.name}</span>
-                  </>
-                ) : isDragActive ? (
-                  <span>Drop your file here...</span>
-                ) : (
-                  <span>Drag & drop or click to select an image, video, or audio file</span>
+      <div className={`app-layout ${theme}-theme`}>
+        <nav className="side-navbar">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/education" className="nav-link">What is Deepfake?</Link>
+        </nav>
+        <div className="main-content">
+          <motion.button
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            whileTap={{ scale: 0.85 }}
+            aria-label="Toggle dark/light mode"
+            style={{ position: 'fixed', top: 24, right: 24, zIndex: 1100 }}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </motion.button>
+          <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+          <Routes>
+            <Route path="/" element={
+              <>
+                <motion.h1
+                  initial={{ opacity: 0, y: -40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="title"
+                >
+                  Deepfake Detector
+                </motion.h1>
+                <motion.div
+                  {...getRootProps()}
+                  className={`dropzone${isDragActive ? " active" : ""}`}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <input {...getInputProps()} />
+                  {file && !loading ? (
+                    <>
+                      <FilePreview file={file} type={fileType} style={{ marginRight: 12, maxWidth: 220, maxHeight: 160 }} />
+                      <span>{file.name}</span>
+                    </>
+                  ) : isDragActive ? (
+                    <span>Drop your file here...</span>
+                  ) : (
+                    <span>Drag & drop or click to select an image, video, or audio file</span>
+                  )}
+                </motion.div>
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                  <ProgressBar progress={uploadProgress} />
                 )}
-              </motion.div>
-              {uploadProgress > 0 && uploadProgress < 100 && (
-                <ProgressBar progress={uploadProgress} />
-              )}
-              {loading && <Spinner />}
-              <motion.button
-                className="analyze-btn"
-                onClick={handleUpload}
-                disabled={!file || loading}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {loading ? "Analyzing..." : "Analyze"}
-              </motion.button>
-              <AnimatePresence>
-                {error && (
-                  <motion.div
-                    className="error"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                  >
-                    {error}
-                  </motion.div>
-                )}
-                {result && (() => {
-                  let displayPrediction = result.prediction;
-                  let displayConfidence = result.confidence;
-                  let displayResult = { ...result };
-                  // If prediction is 'Fake' and confidence < 0.7, show as 'Real' with random confidence 80-100
-                  if (result.prediction.toLowerCase() === 'fake' && result.confidence < 0.7) {
-                    displayPrediction = 'Real';
-                    displayConfidence = (Math.random() * 0.2) + 0.8; // 0.8 to 1.0
-                    displayResult = { ...result, prediction: 'Real', confidence: displayConfidence };
-                  }
-                  return (
+                {loading && <Spinner />}
+                <motion.button
+                  className="analyze-btn"
+                  onClick={handleUpload}
+                  disabled={!file || loading}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {loading ? "Analyzing..." : "Analyze"}
+                </motion.button>
+                <AnimatePresence>
+                  {error && (
                     <motion.div
-                      className="result"
+                      className="error"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
                     >
-                      <h2>Result</h2>
-                      <motion.button
-                        className="download-report-btn"
-                        onClick={handleDownloadReport}
-                        whileTap={{ scale: 0.93 }}
-                        style={{ position: 'absolute', top: 24, right: 32, zIndex: 2 }}
-                      >
-                        Download Report
-                      </motion.button>
-                      <div className="result-horizontal">
-                        <div className="result-visual">
-                          <span className={`result-icon ${displayPrediction === 'Real' ? 'real' : 'deepfake'}`}>{displayPrediction === 'Real' ? '✔️' : '⚠️'}</span>
-                          <span style={{ fontSize: '2rem', fontWeight: 700, color: displayPrediction === 'Real' ? '#2ecc40' : '#ff4f4f' }}>{displayPrediction}</span>
-                        </div>
-                        <div className="result-bar-group">
-                          <span className="result-label">Confidence</span>
-                          <div className="confidence-bar-bg large">
-                            <motion.div className="confidence-bar large" style={{ width: `${(displayConfidence * 100).toFixed(2)}%`, background: displayConfidence > 0.5 ? '#2ecc40' : '#ff4f4f' }} initial={{ width: 0 }} animate={{ width: `${(displayConfidence * 100).toFixed(2)}%` }} transition={{ duration: 0.7 }} />
-                          </div>
-                          <span className="confidence-value large">{(displayConfidence * 100).toFixed(2)}%</span>
-                        </div>
-                        <div className="result-info-group large">
-                          <span className="result-label large">Processing Time</span>
-                          <span className="result-info-icon large">⏱️</span>
-                          <span className="result-info-value large">{displayResult.processing_time?.toFixed(2)}s</span>
-                          <span className="result-label large">Type</span>
-                          <span className="result-info-icon large">{displayResult.modality === 'image' ? '🖼️' : displayResult.modality === 'video' ? '🎬' : displayResult.modality === 'audio' ? '🎵' : '📄'}</span>
-                          <span className="result-info-value large">{displayResult.modality}</span>
-                        </div>
-                        <div className="result-file-preview large">
-                          <FilePreview file={file} type={fileType} style={{ margin: 0, maxWidth: 220, maxHeight: 160 }} />
-                          <span className="result-label large">File Preview</span>
-                        </div>
-                      </div>
-                      <ResultFeedback onRate={handleFeedback} rated={feedbackRated} />
+                      {error}
                     </motion.div>
-                  );
-                })()}
-              </AnimatePresence>
-              <footer>
-                <span>
-                  Powered by <a href="https://huggingface.co/spaces/ayush0910/Deepfake_Detector" target="_blank" rel="noopener noreferrer">Deepfake Detector API</a>
-                </span>
-              </footer>
-            </>
-          } />
-        </Routes>
+                  )}
+                  {result && (() => {
+                    let displayPrediction = result.prediction;
+                    let displayConfidence = result.confidence;
+                    let displayResult = { ...result };
+                    // If prediction is 'Fake' and confidence < 0.7, show as 'Real' with random confidence 80-100
+                    if (result.prediction.toLowerCase() === 'fake' && result.confidence < 0.7) {
+                      displayPrediction = 'Real';
+                      displayConfidence = (Math.random() * 0.2) + 0.8; // 0.8 to 1.0
+                      displayResult = { ...result, prediction: 'Real', confidence: displayConfidence };
+                    }
+                    return (
+                      <motion.div
+                        className="result"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                      >
+                        <h2>Result</h2>
+                        <motion.button
+                          className="download-report-btn"
+                          onClick={handleDownloadReport}
+                          whileTap={{ scale: 0.93 }}
+                          style={{ position: 'absolute', top: 24, right: 32, zIndex: 2 }}
+                        >
+                          Download Report
+                        </motion.button>
+                        <div className="result-horizontal">
+                          <div className="result-visual">
+                            <span className={`result-icon ${displayPrediction === 'Real' ? 'real' : 'deepfake'}`}>{displayPrediction === 'Real' ? '✔️' : '⚠️'}</span>
+                            <span style={{ fontSize: '2rem', fontWeight: 700, color: displayPrediction === 'Real' ? '#2ecc40' : '#ff4f4f' }}>{displayPrediction}</span>
+                          </div>
+                          <div className="result-bar-group">
+                            <span className="result-label">Confidence</span>
+                            <div className="confidence-bar-bg large">
+                              <motion.div className="confidence-bar large" style={{ width: `${(displayConfidence * 100).toFixed(2)}%`, background: displayConfidence > 0.5 ? '#2ecc40' : '#ff4f4f' }} initial={{ width: 0 }} animate={{ width: `${(displayConfidence * 100).toFixed(2)}%` }} transition={{ duration: 0.7 }} />
+                            </div>
+                            <span className="confidence-value large">{(displayConfidence * 100).toFixed(2)}%</span>
+                          </div>
+                          <div className="result-info-group large">
+                            <span className="result-label large">Processing Time</span>
+                            <span className="result-info-icon large">⏱️</span>
+                            <span className="result-info-value large">{displayResult.processing_time?.toFixed(2)}s</span>
+                            <span className="result-label large">Type</span>
+                            <span className="result-info-icon large">{displayResult.modality === 'image' ? '🖼️' : displayResult.modality === 'video' ? '🎬' : displayResult.modality === 'audio' ? '🎵' : '📄'}</span>
+                            <span className="result-info-value large">{displayResult.modality}</span>
+                          </div>
+                          <div className="result-file-preview large">
+                            <FilePreview file={file} type={fileType} style={{ margin: 0, maxWidth: 220, maxHeight: 160 }} />
+                            <span className="result-label large">File Preview</span>
+                          </div>
+                        </div>
+                        <ResultFeedback onRate={handleFeedback} rated={feedbackRated} />
+                      </motion.div>
+                    );
+                  })()}
+                </AnimatePresence>
+                <footer>
+                  <span>
+                    Powered by <a href="https://huggingface.co/spaces/ayush0910/Deepfake_Detector" target="_blank" rel="noopener noreferrer">Deepfake Detector API</a>
+                  </span>
+                </footer>
+              </>
+            } />
+            <Route path="/education" element={<Education />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
